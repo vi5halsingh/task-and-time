@@ -252,19 +252,21 @@ npm run dev
 
 ## 🤖 AI Usage & Prompts Log
 
-*As requested by Suntek AI, below is the transparent summary of AI prompts and workflows used during the development lifecycle:*
+*As explicitly requested in the Suntek AI evaluation instructions ("share the AI prompts or conversation history used during the assignment along with your submission"), a comprehensive, phase-by-phase prompt and decision log has been documented:*
 
-### Architectural Alignment Prompt:
-> *"Analyze the assignment requirements for the Task and Time Tracking App. Provide functional and technical requirements, API routes, database schemas with Prisma, validation constraints with Zod, and a phased implementation roadmap (Phase 1 to Phase 5). Do not create code before confirming the stack."*
+👉 **[Read Full AI Conversation & Prompt History Log (AI_CONVERSATION_HISTORY.md)](AI_CONVERSATION_HISTORY.md)**
 
-### Time Tracking & Atomic Timer Invariant Prompt:
-> *"Implement server-authoritative time tracking in Express and Prisma. Enforce that a user can only have one active timer. When a new timer starts, automatically stop the existing timer, calculate elapsed seconds, and set status to IN_PROGRESS. Synchronize across browser tabs using BroadcastChannel without timer drift."*
+### Key Prompts Summary by Phase:
 
-### Midnight Crossing Calculation Prompt:
-> *"A time log may cross midnight (e.g. 23:30 to 01:00). For September 26, only count 01:00 - 00:00 = 1 hour. Do not double count the 90-minute session. Implement date boundary overlap calculation accurately on the server with user timezone support."*
-
-### Production Cookie & Cross-Domain Fallback Prompt:
-> *"Prepare the completed application for production deployment on Vercel (client) and Render (backend). Ensure HTTP-only cookies work with cross-origin HTTPS requests using SameSite=None; Secure, and add a Bearer token fallback in Axios and Express to prevent session drops caused by third-party cookie blocking in modern browsers."*
+| Phase | Core Objective | Prompt Summary |
+|---|---|---|
+| **Phase 0** | Architecture & Planning | *"Analyze the assignment requirements. Propose functional/technical specs, Zod schemas, Prisma models, and a 5-phase delivery plan before writing code."* |
+| **Phase 1** | Setup & DB Modeling | *"Initialize client/server with TypeScript, Tailwind, and Prisma. Create User, Task, TimeLog models with cascade deletes and indexes."* |
+| **Phase 2** | Authentication | *"Implement JWT authentication with HTTP-only cookies, bcrypt hashing, ProtectedRoute, and a restrained, non-AI-cluttered UI."* |
+| **Phase 3** | Tasks & Gemini AI | *"Build task CRUD and integrate Google Gemini API to decompose shorthand notes into structured titles and actionable descriptions with fallback."* |
+| **Phase 4** | Real-Time Time Tracking | *"Build server-authoritative timer with single active timer DB transaction, automatic PENDING to IN_PROGRESS transition, and BroadcastChannel sync."* |
+| **Phase 5** | Daily Summary & Analytics | *"Calculate daily metrics with exact midnight-crossing boundary clipping (e.g. 23:30 to 01:00 = 30m Day 1, 60m Day 2) and Recharts visualization."* |
+| **Phase 6** | Production & Cookie Fix | *"Deploy to Vercel, Render, and Neon. Implement dual-mode auth (Cookie + Bearer fallback) to solve cross-domain 3rd-party cookie blocking."* |
 
 ---
 
