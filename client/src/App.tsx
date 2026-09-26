@@ -4,7 +4,7 @@ import { AuthProvider } from './context/AuthContext.js';
 import { ProtectedRoute, PublicOnlyRoute } from './components/ProtectedRoute.js';
 import { LoginPage } from './pages/LoginPage.js';
 import { RegisterPage } from './pages/RegisterPage.js';
-import { AppHome } from './pages/AppHome.js';
+import { TaskDashboard } from './pages/TaskDashboard.js';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,7 +29,7 @@ export default function App() {
 
             {/* Protected routes: redirected to /login if unauthenticated */}
             <Route element={<ProtectedRoute />}>
-              <Route path="/" element={<AppHome />} />
+              <Route path="/" element={<TaskDashboard />} />
             </Route>
 
             {/* Fallback */}
