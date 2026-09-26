@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Search, X, ListFilter, AlertCircle } from 'lucide-react';
+import { Search, X, ListFilter, AlertCircle, Clock } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.js';
 import {
   fetchTasks,
@@ -11,6 +11,8 @@ import {
 import { TaskCreateBar } from '../components/TaskCreateBar.js';
 import { TaskCard } from '../components/TaskCard.js';
 import { TaskEditModal } from '../components/TaskEditModal.js';
+import { ActiveTimerBar } from '../components/ActiveTimerBar.js';
+import { TimeLogHistoryModal } from '../components/TimeLogHistoryModal.js';
 import type { Task, TaskStatus, UpdateTaskPayload } from '../types/task.types.js';
 
 export function TaskDashboard() {
@@ -20,6 +22,7 @@ export function TaskDashboard() {
   const [selectedStatus, setSelectedStatus] = useState<TaskStatus | 'ALL'>('ALL');
   const [searchTerm, setSearchTerm] = useState('');
   const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
 
   // Fetch tasks
   const {
@@ -53,6 +56,7 @@ export function TaskDashboard() {
     mutationFn: deleteTask,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      queryClient.invalidateQueries({ queryKey: ['timeLogs'] });
     },
   });
 
@@ -104,6 +108,16 @@ export function TaskDashboard() {
           </div>
 
           <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setIsHistoryOpen(true)}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-zinc-600 hover:text-zinc-900 bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 rounded transition-colors cursor-pointer"
+              title="View time tracking history"
+            >
+              <Clock className="w-3.5 h-3.5 text-zinc-500" />
+              <span>Time Logs</span>
+            </button>
+
             <div className="text-right hidden sm:block">
               <div className="text-xs font-medium text-zinc-900">{user?.name}</div>
               <div className="text-[11px] text-zinc-500">{user?.email}</div>
@@ -112,13 +126,16 @@ export function TaskDashboard() {
             <button
               onClick={() => logout()}
               type="button"
-              className="text-xs font-medium text-zinc-600 hover:text-zinc-900 bg-white border border-zinc-200 hover:border-zinc-300 px-3 py-1.5 rounded-md transition-colors cursor-pointer"
+              className="text-xs font-medium text-zinc-600 hover:text-zinc-900 bg-white border border-zinc-200 hover:border-zinc-300 px-3 py-1.5 rounded transition-colors cursor-pointer"
             >
               Log out
             </button>
           </div>
         </div>
       </header>
+
+      {/* Sticky Active Timer Bar */}
+      <ActiveTimerBar />
 
       {/* Main Container */}
       <main className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6">
@@ -266,6 +283,12 @@ export function TaskDashboard() {
           await updateMutation.mutateAsync({ id, payload });
         }}
         isUpdating={updateMutation.isPending}
+      />
+
+      {/* Time Log History Modal */}
+      <TimeLogHistoryModal
+        isOpen={isHistoryOpen}
+        onClose={() => setIsHistoryOpen(false)}
       />
     </div>
   );
