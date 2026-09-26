@@ -6,6 +6,7 @@ import { healthRouter } from './routes/health.routes.js';
 import { authRouter } from './routes/auth.routes.js';
 import { taskRouter } from './routes/task.routes.js';
 import { timeLogRouter } from './routes/timeLog.routes.js';
+import { analyticsRouter } from './routes/analytics.routes.js';
 import { errorHandler, notFoundHandler } from './middlewares/errorHandler.js';
 
 dotenv.config();
@@ -29,6 +30,7 @@ app.use('/api', healthRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/tasks', taskRouter);
 app.use('/api/time-logs', timeLogRouter);
+app.use('/api/analytics', analyticsRouter);
 
 // Error handlers
 app.use(notFoundHandler);

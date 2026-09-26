@@ -98,6 +98,8 @@ export function TimerProvider({ children }: { children: ReactNode }) {
           if (event.data?.type === 'TIMER_SYNC') {
             refreshTimer();
             queryClient.invalidateQueries({ queryKey: ['tasks'] });
+            queryClient.invalidateQueries({ queryKey: ['timeLogs'] });
+            queryClient.invalidateQueries({ queryKey: ['dailySummary'] });
           }
         };
       }
@@ -151,6 +153,7 @@ export function TimerProvider({ children }: { children: ReactNode }) {
       setElapsedSeconds(0);
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
       queryClient.invalidateQueries({ queryKey: ['timeLogs'] });
+      queryClient.invalidateQueries({ queryKey: ['dailySummary'] });
       notifyOtherTabs();
     } finally {
       setIsStarting(false);
@@ -166,6 +169,7 @@ export function TimerProvider({ children }: { children: ReactNode }) {
       setElapsedSeconds(0);
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
       queryClient.invalidateQueries({ queryKey: ['timeLogs'] });
+      queryClient.invalidateQueries({ queryKey: ['dailySummary'] });
       notifyOtherTabs();
     } finally {
       setIsStopping(false);

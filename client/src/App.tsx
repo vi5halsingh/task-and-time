@@ -6,6 +6,7 @@ import { ProtectedRoute, PublicOnlyRoute } from './components/ProtectedRoute.js'
 import { LoginPage } from './pages/LoginPage.js';
 import { RegisterPage } from './pages/RegisterPage.js';
 import { TaskDashboard } from './pages/TaskDashboard.js';
+import { DailySummaryPage } from './pages/DailySummaryPage.js';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -32,6 +33,7 @@ export default function App() {
               {/* Protected routes: redirected to /login if unauthenticated */}
               <Route element={<ProtectedRoute />}>
                 <Route path="/" element={<TaskDashboard />} />
+                <Route path="/summary" element={<DailySummaryPage />} />
               </Route>
 
               {/* Fallback */}

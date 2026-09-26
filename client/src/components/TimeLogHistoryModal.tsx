@@ -24,6 +24,7 @@ export function TimeLogHistoryModal({ isOpen, onClose }: TimeLogHistoryModalProp
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['timeLogs'] });
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      queryClient.invalidateQueries({ queryKey: ['dailySummary'] });
     },
   });
 
