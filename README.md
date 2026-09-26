@@ -1,153 +1,242 @@
 # Suntek Tracker — Task & Time Tracking App
 
-A full-stack, production-ready productivity and time-tracking application designed with a restrained, mature UI and robust real-time tracking engine. Built with React, Vite, Node.js, Express, PostgreSQL, Prisma, Recharts, and Google Gemini AI.
+> **Suntek AI Full Stack Developer Assignment Submission**  
+> **Candidate**: Vishal Singh Lodhi ([vishalsinghlodhi16@gmail.com](mailto:vishalsinghlodhi16@gmail.com))  
+> **Assignment Notion Spec**: [Full Stack Assignment Details](https://curved-memory-1dd.notion.site/Full-Stack-Assignment-1eb1fc0d84b0803f9f43d02ce956b10f)
 
 ---
 
 ## 🌐 Live URLs & Demo Credentials
 
-- **Live Frontend**: `https://<your-vercel-app>.vercel.app` *(Replace with deployed Vercel URL)*
-- **Live Backend API**: `https://<your-render-service>.onrender.com` *(Replace with deployed Render URL)*
+| Resource | URL |
+|---|---|
+| **Live Frontend Application** | [https://trackit-beta-eosin.vercel.app](https://trackit-beta-eosin.vercel.app) |
+| **Live Backend API** | [https://track-it-pu57.onrender.com](https://track-it-pu57.onrender.com) |
+| **API Health Check** | [https://track-it-pu57.onrender.com/api/health](https://track-it-pu57.onrender.com/api/health) |
+| **GitHub Repository** | [https://github.com/vi5halsingh/task-and-time](https://github.com/vi5halsingh/task-and-time) |
 
-### Demo Account
-- **Email**: `alex@example.com`
-- **Password**: `Password123!`
+### 🔑 Demo Account Credentials
+- **Email**: `vishalsinghlodhi16@gmail.com`
+- **Password**: `11111111`
 
-*(Or register a new account on the live app)*
+*(You can also register a fresh account directly on the application)*
 
 ---
 
-## ✨ Features
+## 📋 Project Overview & Architecture
 
-1. **Authentication & Authorization**:
-   - Secure registration, login, logout, and persistent session recovery (`/api/auth/me`).
-   - Secure HTTP-only cookies (`auth_token`) with cross-site `SameSite=None; Secure` configuration for deployed production environments and `SameSite=Lax` for local development.
-   - Passwords hashed with `bcryptjs`.
+**Suntek Tracker** is an enterprise-grade productivity web application designed to help individuals and teams manage tasks, track real-time focus sessions, and visualize daily productivity metrics.
 
-2. **Task Management**:
-   - Task CRUD with title, description, and status (`PENDING`, `IN_PROGRESS`, `COMPLETED`).
-   - Natural language input with instant AI expansion.
-   - Real-time client-side search and status filter tabs with task counts.
-   - Modal-based editing and safe deletion with cascade guarantees.
-
-3. **Google Gemini AI Task Enhancement**:
-   - Transforms rough natural-language notes (e.g. *"fix auth bug before demo"*) into structured, professional task titles and actionable descriptions.
-   - Resilient architecture: dynamically loads environment keys with built-in heuristic fallback parsing if API keys are exhausted.
-
-4. **Real-Time Time Tracking Engine**:
-   - Live persistent timer that tracks elapsed seconds directly against server timestamps.
-   - Strict single active timer constraint per user enforced atomically at the database level.
-   - Starting a timer on a `PENDING` task automatically transitions it to `IN_PROGRESS`.
-   - Multi-tab synchronization via browser `BroadcastChannel`.
-   - Time tracking history log modal with duration formatting and log deletion.
-
-5. **Daily Productivity Summary & Analytics**:
-   - Timezone-aware daily aggregation (`GET /api/analytics/daily-summary?date=YYYY-MM-DD`).
-   - Precise midnight-crossing boundary clipping: sessions spanning midnight (e.g., 23:30 to 01:00) count accurately toward each day without double-counting.
-   - Interactive date selector with Previous/Next day navigation.
-   - Key productivity metrics (Total tracked time, tasks worked on, completed tasks, active tasks).
-   - Clean Recharts time distribution bar chart.
-   - Tasks worked on breakdown with relative proportion progress bars.
-
-6. **Restrained, Professional UI/UX**:
-   - Built to feel like a mature productivity tool — subtle surfaces, clean typography, accessible contrast, and zero AI-generated visual clutter.
+Built strictly according to Suntek AI's technical evaluation criteria, the project adheres to:
+- **Clean Architecture & Separation of Concerns**: Controllers, middlewares, services, data access layers, and type-safe schemas.
+- **Restrained, Mature UI/UX**: Designed without generic AI-generated templates or flashy noise — prioritizing high information density, intentional whitespace, accessible contrast, and subtle micro-interactions.
+- **Server-Authoritative Timing Engine**: Time calculations, active timer guarantees, and midnight-crossing boundary clipping are strictly validated on the server.
+- **Cross-Domain Resilient Authentication**: Dual-mode auth combining secure HTTP-only cookies (`SameSite=None; Secure`) and `Authorization: Bearer` header fallback to resist modern browser 3rd-party cookie blocking between Vercel and Render.
 
 ---
 
 ## 🛠 Tech Stack
 
-| Layer | Technology |
+| Layer | Technologies Used |
 |---|---|
-| **Frontend** | React 18, Vite, TypeScript, Tailwind CSS, TanStack Query v5, Axios, React Router v7, Recharts, Lucide Icons |
+| **Frontend** | React 18, Vite, TypeScript, Tailwind CSS, TanStack Query v5, Axios, React Router v7, Recharts, Lucide React |
 | **Backend** | Node.js, Express, TypeScript, Prisma ORM, Zod, JWT, Cookie-Parser, CORS, Bcryptjs |
-| **Database** | PostgreSQL (Neon serverless for production, local Docker/Postgres for dev) |
-| **AI** | Google Gemini API (`@google/genai`) |
-| **Hosting** | Vercel (Frontend SPA) + Render (Backend Web Service) |
+| **Database** | PostgreSQL (Neon Serverless for Production, Docker/Postgres for Local Dev) |
+| **AI Integration** | Google Gemini API (`@google/genai`) for natural-language task decomposition |
+| **Cloud Hosting** | Vercel (Frontend SPA) + Render (Backend Web Service) + Neon (Cloud PostgreSQL) |
 
 ---
 
-## 📁 Repository Architecture
+## ⚡ Core Features & Engineering Highlights
+
+### 1. Robust Authentication & Session Management
+- Secure user registration, login, logout, and token verification (`/api/auth/me`).
+- Password hashing with salted `bcryptjs` (cost factor 10).
+- **Dual-Mode Auth (Cookie + Bearer Fallback)**:
+  - Sets HTTP-only cookie with `SameSite=None; Secure` in production.
+  - Automatically attaches `Authorization: Bearer <token>` through Axios request interceptors to prevent session loss on browsers blocking third-party cross-site cookies.
+
+### 2. Task Management & Gemini AI Enhancement
+- Full task lifecycle management with statuses: `PENDING`, `IN_PROGRESS`, and `COMPLETED`.
+- Instant client-side search, real-time status filtering tabs, and accurate task counters.
+- **Google Gemini AI Integration**:
+  - Accepts natural-language shorthand (e.g. *"prepare deck for client meeting tomorrow afternoon"*).
+  - Deconstructs input into a professional title and bulleted actionable description.
+  - Built with dynamic `.env` re-parsing and an offline heuristic fallback parser for 100% availability even under API quota exhaustion.
+
+### 3. Server-Authoritative Real-Time Timer
+- **Single Active Timer Invariant**: Enforces at the database transaction level that a user can have at most one active running timer at any given moment.
+- Starting a timer on a new task automatically stops any currently running session, commits its duration, and transitions the new task to `IN_PROGRESS`.
+- **Drift-Proof Frontend Clock**: Calculates elapsed time dynamically from server `startTime` (`Date.now() - startTime`), preventing drift caused by browser tab throttling.
+- **Multi-Tab Sync**: Synchronizes timer state across open tabs using the browser `BroadcastChannel` API (`suntek_timer_channel`).
+
+### 4. Daily Productivity Summary & Analytics
+- Queryable via `GET /api/analytics/daily-summary?date=YYYY-MM-DD&timezone=...`.
+- **Accurate Midnight Crossing Calculation**:
+  - Handles time tracking sessions that cross calendar day boundaries (e.g., 23:30 to 01:00).
+  - Server clamps intervals to day boundaries: counts exactly 30 minutes on Day 1 and 60 minutes on Day 2 without duplicate double-counting.
+- **Data Visualization**: Recharts vertical/horizontal bar chart with dynamic scaling, custom hover tooltips, and relative percentage progress bars.
+- High-level KPIs: Total Tracked Time, Tasks Worked On, Completed Tasks, and In-Progress/Pending tasks.
+
+---
+
+## 📁 Repository Structure
 
 ```
 suntek/
-├── client/                     # Frontend Single Page App (Vite + React + TS)
+├── client/                         # Frontend Single Page App (Vite + React + TS)
 │   ├── src/
-│   │   ├── components/         # Reusable components (AppHeader, ActiveTimerBar, TaskCard, etc.)
-│   │   ├── context/            # Global AuthContext & TimerContext
-│   │   ├── pages/              # LoginPage, RegisterPage, TaskDashboard, DailySummaryPage
-│   │   ├── services/           # Axios API services (auth, task, timeLog, analytics)
-│   │   ├── types/              # TypeScript interfaces & DTOs
-│   │   ├── App.tsx             # Root router with ProtectedRoute
-│   │   └── main.tsx            # Application entrypoint
-│   ├── vercel.json             # SPA client-side rewrite rules for Vercel
-│   ├── .env.example            # Frontend environment variable template
+│   │   ├── components/             # Reusable UI (AppHeader, ActiveTimerBar, TaskCard, etc.)
+│   │   ├── context/                # Global AuthContext & TimerContext (ticker + BroadcastChannel)
+│   │   ├── pages/                  # LoginPage, RegisterPage, TaskDashboard, DailySummaryPage
+│   │   ├── services/               # Axios API modules (auth, task, timeLog, analytics)
+│   │   ├── types/                  # TypeScript types, DTOs & form contracts
+│   │   ├── App.tsx                 # Protected routing & TanStack Query provider
+│   │   └── index.css               # Tailwind CSS design system
+│   ├── vercel.json                 # SPA client-side rewrite rules for Vercel
 │   └── package.json
 │
-├── server/                     # Backend REST API (Node.js + Express + TS)
+├── server/                         # Backend REST API (Node.js + Express + TS)
 │   ├── src/
-│   │   ├── controllers/        # Route handlers (auth, task, timeLog, analytics)
-│   │   ├── middlewares/        # requireAuth, errorHandler, validateBody
-│   │   ├── routes/             # Express routers
-│   │   ├── services/           # Business logic, time calculations & Gemini AI
-│   │   ├── schemas/            # Zod validation schemas
-│   │   ├── types/              # Backend TypeScript types
-│   │   ├── lib/                # Prisma client & JWT utilities
-│   │   └── index.ts            # Server entrypoint with CORS & reverse-proxy trust
+│   │   ├── controllers/            # Route controllers (auth, task, timeLog, analytics)
+│   │   ├── middlewares/            # requireAuth, errorHandler, validateBody
+│   │   ├── routes/                 # Express router definitions
+│   │   ├── services/               # Business logic, time calculations & Gemini AI
+│   │   ├── schemas/                # Zod validation schemas
+│   │   ├── lib/                    # Prisma client singleton & JWT utilities
+│   │   └── index.ts                # Server entrypoint with CORS & reverse-proxy trust
 │   ├── prisma/
-│   │   ├── schema.prisma       # Database models (User, Task, TimeLog)
-│   │   └── migrations/         # PostgreSQL migration files
-│   ├── .env.example            # Backend environment variable template
+│   │   ├── schema.prisma           # Relational schema (User, Task, TimeLog)
+│   │   └── migrations/             # SQL migration history
 │   └── package.json
 │
-├── package.json                # Root convenience scripts (dev, build, prisma)
-├── .gitignore                  # Git ignore rules (strictly excludes all .env files)
+├── package.json                    # Root orchestration scripts
 └── README.md
 ```
 
 ---
 
-## ⚙️ Environment Variables
+## 📡 API Specification
 
-### Backend (`server/.env`)
-| Variable | Description | Example (Development) | Example (Production / Render) |
-|---|---|---|---|
-| `PORT` | HTTP port for server | `5000` | `10000` (set automatically by Render) |
-| `NODE_ENV` | Environment mode | `development` | `production` |
-| `DATABASE_URL` | PostgreSQL connection string | `postgresql://user:pass@localhost:5432/suntek_tracker?schema=public` | `postgresql://user:pass@ep-xyz.neon.tech/neondb?sslmode=require` |
-| `JWT_SECRET` | Secret key for signing tokens | `dev_secret_key_suntek_2026` | `generate-a-strong-random-64-char-string` |
-| `CLIENT_URL` | Allowed frontend origin for CORS | `http://localhost:5173` | `https://suntek-tracker.vercel.app` |
-| `GEMINI_API_KEY`| Google Gemini API key | `AIzaSy...` | `AIzaSy...` |
+### Authentication
+- `POST /api/auth/register` — Create new user account & set session cookie
+- `POST /api/auth/login` — Authenticate credentials & return session token
+- `POST /api/auth/logout` — Revoke session cookie & clear auth state
+- `GET /api/auth/me` — Retrieve currently logged-in user profile
 
-### Frontend (`client/.env`)
-| Variable | Description | Example (Development) | Example (Production / Vercel) |
-|---|---|---|---|
-| `VITE_API_URL` | Base URL for backend API | `http://localhost:5000/api` | `https://suntek-backend.onrender.com/api` |
+### Tasks
+- `GET /api/tasks` — List all user tasks with aggregated duration
+- `POST /api/tasks` — Create task with status `PENDING` / `IN_PROGRESS` / `COMPLETED`
+- `POST /api/tasks/ai-generate` — Decompose prompt into structured title & description via Gemini AI
+- `GET /api/tasks/:id` — Fetch single task details
+- `PATCH /api/tasks/:id` — Update title, description, or status
+- `DELETE /api/tasks/:id` — Delete task (cascades to related time logs)
+
+### Time Tracking
+- `GET /api/time-logs/active` — Return currently running timer for authenticated user
+- `POST /api/time-logs/start` — Start tracking task (auto-stops running timer)
+- `POST /api/time-logs/stop` — Stop active timer & persist session duration
+- `GET /api/time-logs` — Retrieve user's historical time logs
+- `DELETE /api/time-logs/:id` — Delete specific time log
+
+### Analytics
+- `GET /api/analytics/daily-summary?date=YYYY-MM-DD&timezone=...` — Timezone-aware productivity summary with midnight clipping
 
 ---
 
-## 🚀 Local Development Setup
+## 🗄 Database Schema (Prisma / PostgreSQL)
+
+```prisma
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
+
+model User {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  tasks        Task[]
+  timeLogs     TimeLog[]
+
+  @@map("users")
+}
+
+model Task {
+  id          String      @id @default(uuid())
+  userId      String
+  title       String
+  description String?     @db.Text
+  status      TaskStatus  @default(PENDING)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  timeLogs    TimeLog[]
+
+  @@index([userId])
+  @@index([userId, status])
+  @@map("tasks")
+}
+
+model TimeLog {
+  id              String    @id @default(uuid())
+  userId          String
+  taskId          String
+  startTime       DateTime
+  endTime         DateTime?
+  durationSeconds Int?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  task            Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([taskId])
+  @@index([userId, startTime])
+  @@map("time_logs")
+}
+```
+
+---
+
+## 💻 Local Development Setup
 
 ### 1. Prerequisites
-- Node.js (v18+)
-- PostgreSQL (Docker or local installation)
+- **Node.js**: v18+ (Tested on v20 and v24)
+- **PostgreSQL**: Local PostgreSQL server or Docker container
 
-### 2. Clone & Install Dependencies
+### 2. Installation
 ```bash
-git clone <repository-url>
-cd suntek
+git clone https://github.com/vi5halsingh/task-and-time.git
+cd task-and-time
 
-# Install dependencies in root, server, and client
+# Install dependencies across root, server, and client
 npm run install:all
 ```
 
-### 3. Setup Environment Files
-```bash
-cp server/.env.example server/.env
-cp client/.env.example client/.env
-```
-Update `server/.env` with your local PostgreSQL credentials and Gemini API key.
+### 3. Environment Variables
+Create `.env` in `server/` and `client/`:
 
-### 4. Run Database Migrations
+**`server/.env`**:
+```env
+PORT=5000
+NODE_ENV=development
+DATABASE_URL="postgresql://postgres:password123@localhost:5432/suntek_tracker?schema=public"
+JWT_SECRET="your-local-dev-jwt-secret-key"
+CLIENT_URL="http://localhost:5173"
+GEMINI_API_KEY="your-google-gemini-api-key"
+```
+
+**`client/.env`**:
+```env
+VITE_API_URL="http://localhost:5000/api"
+```
+
+### 4. Database Setup & Migrations
 ```bash
 npm run prisma:migrate
 npm run prisma:generate
@@ -155,134 +244,33 @@ npm run prisma:generate
 
 ### 5. Start Development Servers
 ```bash
-# Starts both server (port 5000) and client (port 5173) concurrently
+# Starts both frontend (port 5173) and backend (port 5000) concurrently
 npm run dev
 ```
 
-Visit `http://localhost:5173` in your browser.
+---
+
+## 🤖 AI Usage & Prompts Log
+
+*As requested by Suntek AI, below is the transparent summary of AI prompts and workflows used during the development lifecycle:*
+
+### Architectural Alignment Prompt:
+> *"Analyze the assignment requirements for the Task and Time Tracking App. Provide functional and technical requirements, API routes, database schemas with Prisma, validation constraints with Zod, and a phased implementation roadmap (Phase 1 to Phase 5). Do not create code before confirming the stack."*
+
+### Time Tracking & Atomic Timer Invariant Prompt:
+> *"Implement server-authoritative time tracking in Express and Prisma. Enforce that a user can only have one active timer. When a new timer starts, automatically stop the existing timer, calculate elapsed seconds, and set status to IN_PROGRESS. Synchronize across browser tabs using BroadcastChannel without timer drift."*
+
+### Midnight Crossing Calculation Prompt:
+> *"A time log may cross midnight (e.g. 23:30 to 01:00). For September 26, only count 01:00 - 00:00 = 1 hour. Do not double count the 90-minute session. Implement date boundary overlap calculation accurately on the server with user timezone support."*
+
+### Production Cookie & Cross-Domain Fallback Prompt:
+> *"Prepare the completed application for production deployment on Vercel (client) and Render (backend). Ensure HTTP-only cookies work with cross-origin HTTPS requests using SameSite=None; Secure, and add a Bearer token fallback in Axios and Express to prevent session drops caused by third-party cookie blocking in modern browsers."*
 
 ---
 
-## 🚀 Production Deployment Guide
+## 👤 Author & Acknowledgement
 
-### Phase A: Setup Neon PostgreSQL Database
-1. Go to [Neon](https://neon.tech) and create a free PostgreSQL project.
-2. Under **Connection Details**, select **Prisma** or copy the connection string. It will look like:
-   ```
-   postgresql://<username>:<password>@<ep-name-123456>.us-east-2.aws.neon.tech/neondb?sslmode=require
-   ```
-3. Save this connection string for use in Render.
-
----
-
-### Phase B: Deploy Backend to Render
-1. Go to [Render Dashboard](https://dashboard.render.com) and click **New + > Web Service**.
-2. Connect your Git repository.
-3. Configure the service settings:
-   - **Name**: `suntek-backend`
-   - **Root Directory**: `server`
-   - **Environment**: `Node`
-   - **Branch**: `main`
-   - **Build Command**:
-     ```bash
-     npm install && npm run build && npx prisma migrate deploy
-     ```
-   - **Start Command**:
-     ```bash
-     npm start
-     ```
-4. Configure **Environment Variables** in Render:
-   - `NODE_ENV`: `production`
-   - `DATABASE_URL`: *(Your Neon PostgreSQL connection string from Phase A)*
-   - `JWT_SECRET`: *(A secure random secret, e.g. run `openssl rand -hex 32`)*
-   - `GEMINI_API_KEY`: *(Your Google Gemini API key)*
-   - `CLIENT_URL`: `https://<your-vercel-project-name>.vercel.app` *(You can update this after creating your Vercel project)*
-5. Click **Create Web Service** and wait for the build and deployment to succeed.
-6. Copy your deployed backend service URL (e.g., `https://suntek-backend.onrender.com`).
-
----
-
-### Phase C: Deploy Frontend to Vercel
-1. Go to [Vercel Dashboard](https://vercel.com/dashboard) and click **Add New > Project**.
-2. Import your Git repository.
-3. Configure the project settings:
-   - **Framework Preset**: `Vite`
-   - **Root Directory**: `client` *(Click 'Edit' and select `client`)*
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `dist`
-   - **Install Command**: `npm install`
-4. Configure **Environment Variables** in Vercel:
-   - `VITE_API_URL`: `https://suntek-backend.onrender.com/api` *(Your Render backend URL with `/api`)*
-5. Click **Deploy**.
-6. Once deployed, copy your production Vercel URL (e.g., `https://suntek-tracker.vercel.app`).
-7. **Important**: Go back to Render, update the `CLIENT_URL` environment variable with your exact Vercel URL, and trigger a manual redeploy so CORS and cookies are synchronized!
-
----
-
-## 📡 API Overview
-
-### Authentication (`/api/auth`)
-| Method | Endpoint | Description | Protected |
-|---|---|---|---|
-| `POST` | `/api/auth/register` | Register new user & set auth cookie | No |
-| `POST` | `/api/auth/login` | Login user & set auth cookie | No |
-| `POST` | `/api/auth/logout` | Clear auth cookie | Yes |
-| `GET` | `/api/auth/me` | Fetch currently authenticated user | Yes |
-
-### Tasks (`/api/tasks`)
-| Method | Endpoint | Description | Protected |
-|---|---|---|---|
-| `GET` | `/api/tasks` | Get all user tasks (with total logged seconds) | Yes |
-| `POST` | `/api/tasks` | Create a new task | Yes |
-| `POST` | `/api/tasks/ai-generate`| AI enhancement using Google Gemini | Yes |
-| `GET` | `/api/tasks/:id` | Get specific task details | Yes |
-| `PATCH` | `/api/tasks/:id` | Update task title, description, or status | Yes |
-| `DELETE` | `/api/tasks/:id` | Delete task & cascade-delete related logs | Yes |
-
-### Time Tracking (`/api/time-logs`)
-| Method | Endpoint | Description | Protected |
-|---|---|---|---|
-| `GET` | `/api/time-logs/active` | Get user's current running timer (if any) | Yes |
-| `POST` | `/api/time-logs/start` | Start tracking a task (auto-stops running timer) | Yes |
-| `POST` | `/api/time-logs/stop` | Stop active tracking session & persist duration | Yes |
-| `GET` | `/api/time-logs` | Get list of historical time logs | Yes |
-| `DELETE` | `/api/time-logs/:id` | Delete a specific time log | Yes |
-
-### Analytics (`/api/analytics`)
-| Method | Endpoint | Description | Protected |
-|---|---|---|---|
-| `GET` | `/api/analytics/daily-summary` | Daily time tracking breakdown & midnight calculation | Yes |
-
----
-
-## 🔒 Security & Cookie Verification
-
-In production:
-- The backend runs behind Render's reverse proxy with `app.set('trust proxy', 1)`.
-- Authentication cookies are set with:
-  ```ts
-  {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'none',
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-    path: '/'
-  }
-  ```
-- This configuration ensures that cross-origin HTTPS requests between the Vercel frontend and Render backend send and receive cookies securely without browser rejection.
-- All endpoints query exclusively by `req.user.id` decoded from the verified JWT.
-
----
-
-## 🧪 Testing Commands
-
-```bash
-# Verify backend TypeScript compilation
-npm run --prefix server build
-
-# Verify frontend TypeScript compilation & bundling
-npm run --prefix client build
-
-# Check Prisma migration status
-npm run --prefix server prisma:migrate -- status
-```
+- **Developer**: Vishal Singh Lodhi
+- **Email**: [vishalsinghlodhi16@gmail.com](mailto:vishalsinghlodhi16@gmail.com)
+- **Role**: Full Stack Developer Candidate
+- **Company**: Suntek AI
