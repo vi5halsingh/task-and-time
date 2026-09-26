@@ -12,6 +12,19 @@ export const api = axios.create({
   },
 });
 
+// Interceptor to ensure Authorization header is attached if token exists (cross-origin cookie fallback)
+api.interceptors.request.use((config) => {
+  try {
+    const token = localStorage.getItem('auth_token');
+    if (token && config.headers && !config.headers.Authorization) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+  } catch {
+    // Non-critical if localStorage not accessible
+  }
+  return config;
+});
+
 export function getErrorMessage(error: unknown): string {
   if (error instanceof AxiosError) {
     const errorData = error.response?.data;

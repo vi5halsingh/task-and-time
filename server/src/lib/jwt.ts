@@ -18,7 +18,11 @@ export function verifyAuthToken(token: string): JwtPayload {
 }
 
 export function getAuthCookieOptions(): CookieOptions {
-  const isProd = process.env.NODE_ENV === 'production';
+  const isProd =
+    process.env.NODE_ENV === 'production' ||
+    Boolean(process.env.RENDER) ||
+    Boolean(process.env.RENDER_EXTERNAL_URL);
+
   return {
     httpOnly: true,
     secure: isProd,

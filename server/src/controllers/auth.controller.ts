@@ -23,6 +23,7 @@ export async function register(
       success: true,
       message: 'Account created successfully',
       user,
+      token,
     });
   } catch (error) {
     next(error);
@@ -45,6 +46,7 @@ export async function login(
       success: true,
       message: 'Logged in successfully',
       user,
+      token,
     });
   } catch (error) {
     next(error);
